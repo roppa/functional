@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <script src="../libs/rx.all.js"></script>
+  <script src="../libs/jquery.min.js"></script>
+</head>
+<body>
+
+  <input id="textbox">
+  <div id="results"></div>
+
+  <script>
+
+  'use strict';
+
+  function searchWiki (term) {
+    return Observable.create(observer => {
+      let url = wikiUrl + '&search=' + encodeURIComponent(term) + '&callback=?';
+      $.getJSON(url, data => {
+        observer.onNext(data.filter(value => !(typeof value === 'string')).map((item, index) => {
+          return {
+            term: data[1][index],
+            description: data[2][index],
+            url: data[3][index]
+          };
+        }));
+        observer.onCompleted();
+      });
+      return function dispose () {
+        console.log('disposed');
+      };
+    });
+  }
+
+  let Observable = Rx.Observable;
+  let wikiUrl = 'https://en.wikipedia.org/w/api.php?action=opensearch&format=json';
+  let textbox = document.getElementById('textbox');
+  let resultsDiv = document.getElementById('results');
+  let keypresses = Observable.fromEvent(textbox, 'keyup');
+
+  let searchResultsSet = keypresses.
+    throttle(20).
+    map(key => {
+      return textbox.value;
+    }).
+    distinctUntilChanged().
+    filter(search => search.trim().length > 2).
+    map(search => searchWiki(search).retry(3)).
+    switchLatest();
+
+  searchResultsSet.forEach(result => {
+    let resultsHTML = '';
+    result.forEach(item => resultsHTML += '<a href="' + item.url + '"><div><h2>' + item.term + '</h2><p>' + item.description + '</p></div></a>');
+    resultsDiv.innerHTML = resultsHTML;
+  });
+
+  </script>
+</body>
+</html>

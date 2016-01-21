@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <script src="../libs/rx.all.js"></script>
+</head>
+<body>
+
+  <article>
+    <p id="take1result"></p>
+    <button id="take1">Click me</button>  
+  </article>
+
+  <script>
+
+    'use strict';
+
+    /*
+      Run click event once
+    */
+    ((button) => {
+      let buttonClicks = Rx.Observable.fromEvent(button, "click");
+      buttonClicks.
+        take(1).
+        forEach(() => document.
+          getElementById('take1result').
+          textContent = 'Button was clicked once. Removed event handler.'
+        );
+    })(document.getElementById('take1'));
+
+  </script>
+</body>
+</html>

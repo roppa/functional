@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <script src="../libs/rx.all.js"></script>
+  <style>
+    html, body {
+      height: 100%;
+      width: 100%;
+      background-color: yellow;
+    }
+    .box {
+      width: 3px;
+      height: 3px;
+      background-color: red;
+      position: absolute;
+    }
+  </style>
+</head>
+<body>
+  <script>
+
+    'use strict';
+
+    (() => {
+      let sprite = document.querySelector('body');
+
+      let spriteMouseDowns = Rx.Observable.fromEvent(sprite, 'mousedown');
+      let spriteMouseMoves = Rx.Observable.fromEvent(sprite, 'mousemove');
+      let spriteMouseUps = Rx.Observable.fromEvent(sprite, 'mouseup');
+      let spriteMouseDrags = spriteMouseDowns.
+                                concatMap((contactPoint) => spriteMouseMoves.takeUntil(spriteMouseUps));
+
+      spriteMouseDrags.forEach((dragPoint) => {
+        let box = document.createElement('div');
+        box.className = 'box';
+        box.style.top = dragPoint.pageY + 'px';
+        box.style.left = dragPoint.pageX + 'px';
+        document.body.appendChild(box);
+      });
+
+    })();
+
+  </script>
+</body>
+</html>

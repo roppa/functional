@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <script src="../libs/rx.all.js"></script>
+  <script src="../libs/jquery.min.js"></script>
+</head>
+<body>
+
+  <button id="button">Click me</button>
+
+  <script>
+
+    'use strict';
+
+    function Observable (forEach) {
+      this._forEach = forEach;
+    }
+
+    Observable.prototype = {
+      forEach: function (onNext, onError, onCompleted) {
+        if (typeof onNext === 'function') {
+          return this._forEach({
+            onNext: onNext,
+            onError: onError || function () {  },
+            onCompleted: onCompleted || function () {  }
+          });
+        } else {
+          return this._forEach(onNext);
+        }
+      },
+      map: function (projection) {
+        var self = this;
+        return new Observable(function forEach (observer) {
+          return self.forEach(x => observer.onNext(projection(value)),
+                              error => observer.onError(error),
+                              () => observer.onCompleted());
+        });
+      },
+      filter: function (predicate) {
+        var self = this;
+        return new Observable(function forEach (observer) {
+          return self.forEach(function onNext (value) {
+            if (predicate(value)) {
+              observer.onNext(value);
+            }
+          },
+          function onError (error) {
+            return observer.onError(error);
+          },
+          function onCompleted () {
+            return observer.onCompleted();
+          });
+        });
+      }
+    };
+
+    Observable.fromEvent = function (dom, eventName) {
+      return new Observable(function forEach (observer) {
+        var handler = function (event) {
+          observer.onNext(event);
+        };
+        dom.addEventListener(eventName, handler);
+        //return subscription object
+        return {
+          dispose: function () {
+            dom.removeEventListener(eventName, handler);
+          }
+        };
+      });
+    };
+
+    var button = document.getElementById('button');
+    var clicks = Observable.fromEvent(button, 'click');
+
+    clicks.forEach(function (x) {
+      console.log(x);
+    });
+
+  </script>
+</body>
+</html>

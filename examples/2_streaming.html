@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <script src="../libs/rx.all.js"></script>
+  <style>
+
+    html, body {
+      height: 100%;
+      width: 100%;
+    }
+
+  </style>
+</head>
+<body>
+
+  <article>
+    <button id="start">Start</button>  
+    <button id="stop">Stop</button>  
+    <p id="startResult"></p>
+  </article>
+
+  <script>
+
+    'use strict';
+
+    // function(sprite, spriteContainer) {
+    //   var spriteMouseDowns = Observable.fromEvent(sprite, "mousedown"),
+    //     spriteContainerMouseMoves = Observable.fromEvent(spriteContainer, "mousemove"),
+    //     spriteContainerMouseUps = Observable.fromEvent(spriteContainer, "mouseup"),
+    //     spriteMouseDrags =
+    //       // For every mouse down event on the sprite...
+    //       spriteMouseDowns.
+    //         concatMap(function(contactPoint) {
+    //           // ...retrieve all the mouse move events on the sprite container...
+    //           return spriteContainerMouseMoves.
+    //             // ...until a mouse up event occurs.
+    //             takeUntil(spriteContainerMouseUps);
+    //         });
+
+    //   // For each mouse drag event, move the sprite to the absolute page position.
+    //   spriteMouseDrags.forEach(function(dragPoint) {
+    //     sprite.style.left = dragPoint.pageX + "px";
+    //     sprite.style.top = dragPoint.pageY + "px";
+    //   });
+    // }
+
+
+    let dataStream = {
+      interval: null,
+      start: (fn, time) => {
+        time = time || 1000;
+        fn = fn || function () { console.log('tick'); };
+        this.interval = window.setInterval(fn, time);
+      },
+      stop: () => {
+        if (this.interval) {
+          window.clearInterval(this.interval);
+        }
+      }
+    };
+
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
