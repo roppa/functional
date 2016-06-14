@@ -1,6 +1,6 @@
 #Functional Reactive Programming
 
-I'm going through some tutorials on this paradigm.
+I'm learning a lot about this paradigm so I thoguht I would make some notes. I have been through the awesome [Asynchronous Javascript course](https://frontendmasters.com/courses/asynchronous-javascript) at [Frontend Masters](https://frontendmasters.com) and a lot of the notes are from that.
 
 ##Installation
 

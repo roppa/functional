@@ -2,30 +2,38 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Document</title>
+  <title>Take</title>
   <script src="../libs/rx.all.js"></script>
 </head>
 <body>
 
+  <h1>Take</h1>
+  <p>Handle 3 click events</p>
+
   <article>
     <p id="take1result"></p>
-    <button id="take1">Click me</button>  
+    <button id="take1">Click me</button>
   </article>
 
   <script>
 
     'use strict';
 
-    /*
-      Run click event once
-    */
     ((button) => {
-      let buttonClicks = Rx.Observable.fromEvent(button, "click");
-      buttonClicks.
-        take(1).
-        forEach(() => document.
-          getElementById('take1result').
-          textContent = 'Button was clicked once. Removed event handler.'
+      let buttonClicks = Rx.Observable.fromEvent(button, 'click').take(3);
+      let result = document.getElementById('take1result');
+      let inc = 0;
+      buttonClicks
+        .subscribe(
+          (event) => {
+            result.textContent = `Button was clicked ${++inc} times`
+          },
+          (error) => {
+            result.textContent = error.message;
+          },
+          () => {
+            result.textContent = 'Success! Clicked 3 times!';
+          }
         );
     })(document.getElementById('take1'));
 

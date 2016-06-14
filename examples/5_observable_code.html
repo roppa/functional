@@ -9,10 +9,14 @@
 <body>
 
   <button id="button">Click me</button>
+  <div id="result"></div>
 
   <script>
 
     'use strict';
+
+    let result = document.getElementById('result');
+    let count = 0;
 
     function Observable (forEach) {
       this._forEach = forEach;
@@ -74,8 +78,8 @@
     var button = document.getElementById('button');
     var clicks = Observable.fromEvent(button, 'click');
 
-    clicks.forEach(function (x) {
-      console.log(x);
+    clicks.forEach(function (event) {
+      result.textContent = `Clicked ${++count} times`;
     });
 
   </script>
